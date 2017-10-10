@@ -11,7 +11,9 @@ object LogisticRegressionRunner extends App {
     .master("local")
     .getOrCreate()
 
-  val training = spark.read.format("libsvm").load("sample_libsvm_data.txt")
+  val training = spark.read
+      .format("libsvm")
+      .load("sample_libsvm_data.txt")
 
   val lr = new LogisticRegression()
     .setMaxIter(10)
