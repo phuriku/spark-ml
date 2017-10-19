@@ -1,6 +1,7 @@
 package com.expedia.spark.examples
 
 import org.apache.spark.ml.classification.LogisticRegression
+import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.sql.SparkSession
 
 object LogisticRegressionRunner extends App {
@@ -11,17 +12,28 @@ object LogisticRegressionRunner extends App {
     .master("local")
     .getOrCreate()
 
-  val training = spark.read
-      .format("libsvm")
-      .load("sample_libsvm_data.txt")
+  import spark.implicits._
 
-  val lr = new LogisticRegression()
-    .setMaxIter(10)
-    .setRegParam(0.3)
-    .setElasticNetParam(0.8)
+  // Prepare the test set and transform it into a Spark Dataset.
+  val testSet = Seq(2,4,9)
+    .toDF("input")
+  val dataset = new VectorAssembler()
+    .setInputCols(Array("input"))
+    .setOutputCol("features")
+    .transform(testSet)
+    .select("features")
 
-  val lrModel = lr.fit(training)
+  // Load training data, and train the model with the training data.
+  val training = spark.read.format("libsvm")
+    .load("sample_logistic_regression_data.txt")
+  val model = new LogisticRegression().fit(training)
 
-  println(s"Coefficients: ${lrModel.coefficients} Intercept: ${lrModel.intercept}")
+  // Predict labels for test set, and show this result.
+  val predicted = model.transform(dataset)
+  predicted.show()
 
+  // Print the coefficients and intercept for linear regression
+  println(s"Coefficients: ${model.coefficientMatrix} Intercept: ${model.interceptVector}")
+
+  // Summarize the model over the training set and print out some metrics
 }

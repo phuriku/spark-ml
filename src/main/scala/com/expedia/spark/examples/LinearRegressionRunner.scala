@@ -1,8 +1,7 @@
 package com.expedia.spark.examples
 
+import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.ml.regression.LinearRegression
-import org.apache.spark.mllib.linalg.Vectors
-import org.apache.spark.mllib.regression.LabeledPoint
 import org.apache.spark.sql.SparkSession
 
 object LinearRegressionRunner extends App {
@@ -13,27 +12,29 @@ object LinearRegressionRunner extends App {
     .master("local")
     .getOrCreate()
 
-  // Load training data
+  import spark.implicits._
+
+  // Prepare the test set and transform it into a Spark Dataset.
+  val testSet = Seq(2,4,5)
+    .toDF("input")
+  val dataset = new VectorAssembler()
+    .setInputCols(Array("input"))
+    .setOutputCol("features")
+    .transform(testSet)
+    .select("features")
+
+  // Load training data, and train the model with the training data.
   val training = spark.read.format("libsvm")
     .load("sample_linear_regression_data.txt")
+  val model = new LinearRegression().fit(training)
 
-  val lr = new LinearRegression()
-    .setMaxIter(10)
-    .setRegParam(0.3)
-    .setElasticNetParam(0.8)
-
-  // Fit the model
-  val lrModel = lr.fit(training)
+  // Predict labels for test set, and show this result.
+  val predicted = model.transform(dataset)
+  predicted.show()
 
   // Print the coefficients and intercept for linear regression
-  println(s"Coefficients: ${lrModel.coefficients} Intercept: ${lrModel.intercept}")
+  println(s"Coefficients: ${model.coefficients} Intercept: ${model.intercept}")
 
   // Summarize the model over the training set and print out some metrics
-  val trainingSummary = lrModel.summary
-  println(s"numIterations: ${trainingSummary.totalIterations}")
-  println(s"objectiveHistory: [${trainingSummary.objectiveHistory.mkString(",")}]")
-  trainingSummary.residuals.show()
-  println(s"RMSE: ${trainingSummary.rootMeanSquaredError}")
-  println(s"r2: ${trainingSummary.r2}")
-
+  println(s"MSE: ${model.summary.meanSquaredError}")
 }
