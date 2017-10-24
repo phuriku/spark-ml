@@ -26,6 +26,7 @@ lib_managed/
 *.swp
 *.tmproj
 sbt-launch*.jar
+.iris_dataset_cleaned.txt
 
 ### ------- CodeStyle Inclusion -------- ###
 !.idea/codeStyleSettings.xml
