@@ -37,4 +37,5 @@ object LinearRegressionRunner extends App {
 
   // Summarize the model over the training set and print out some metrics
   println(s"MSE: ${model.summary.meanSquaredError}")
+  println(s"Iterations: ${model.summary.totalIterations}")
 }

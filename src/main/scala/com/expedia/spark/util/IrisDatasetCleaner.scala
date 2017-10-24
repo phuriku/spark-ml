@@ -4,15 +4,16 @@ import java.io.FileWriter
 import java.nio.file.{Files, Paths}
 
 import scala.io.Source
-import scala.util.Try
 
 object IrisDatasetCleaner extends App {
 
-  val source = "iris_dataset.txt"
-  val target = "iris_dataset_cleaned.txt"
+  extractSVMLib()
+
+  val source = "/Users/jaemberton/spark-ml/iris_dataset.txt"
+  val target = "/Users/jaemberton/spark-ml/iris_dataset_cleaned.txt"
 
   def extractSVMLib(): Unit = {
-    if (Try(Paths.get(target)).toOption.isDefined) Files.delete(Paths.get(target))
+    if (Files.exists(Paths.get(target))) Files.delete(Paths.get(target))
     val fw = new FileWriter(target, true)
     try {
       Source.fromFile(source).getLines.foreach { line =>

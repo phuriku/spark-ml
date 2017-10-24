@@ -33,5 +33,6 @@ object LogisticRegressionRunner extends App {
   predicted.show()
 
   // Print the coefficients and intercept for logistic regression
-  println(s"Coefficients: \n${model.coefficientMatrix} Intercept: \n${model.interceptVector}")
+  println(s"Coefficients: \n${model.coefficientMatrix} \nIntercept: ${model.interceptVector}")
+  println(s"Iterations: ${model.summary.totalIterations}")
 }
