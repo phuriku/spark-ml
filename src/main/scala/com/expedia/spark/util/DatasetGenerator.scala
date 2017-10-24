@@ -23,6 +23,6 @@ object DatasetGenerator extends App {
     val x = Random.nextInt(100)
     val y = Random.nextInt(200)
 
-    s"$x 1:$y 2:${x*2}"
+    s"${x*2+y*1.0/10000} 1:$y 2:${x}"
   }
 }

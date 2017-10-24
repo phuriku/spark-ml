@@ -1,13 +1,14 @@
 package com.expedia.spark.examples
 
+import com.expedia.spark.examples.LinearRegressionRunner.model
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.sql.SparkSession
 
-object SGDExample extends App {
+object RegularizationExample extends App {
 
   val spark = SparkSession
     .builder()
-    .appName("SGD Example")
+    .appName("Regularization Example")
     .master("local")
     .getOrCreate()
 
@@ -17,7 +18,8 @@ object SGDExample extends App {
   val Array(trainingData, testData) = data.randomSplit(Array(0.7, 0.3))
 
   val model = new LinearRegression()
-    .setRegParam()
+    .setRegParam(0.8)
+    .setElasticNetParam(0)
     .fit(trainingData)
 
   // Predict labels for test set, and show this result.
@@ -29,4 +31,5 @@ object SGDExample extends App {
 
   // Summarize the model over the training set and print out some metrics
   println(s"MSE: ${model.summary.meanSquaredError}")
+  println(s"Iterations: ${model.summary.totalIterations}")
 }
