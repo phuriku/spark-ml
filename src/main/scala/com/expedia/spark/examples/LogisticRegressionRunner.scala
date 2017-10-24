@@ -32,8 +32,6 @@ object LogisticRegressionRunner extends App {
   val predicted = model.transform(dataset)
   predicted.show()
 
-  // Print the coefficients and intercept for linear regression
-  println(s"Coefficients: ${model.coefficientMatrix} Intercept: ${model.interceptVector}")
-
-  // Summarize the model over the training set and print out some metrics
+  // Print the coefficients and intercept for logistic regression
+  println(s"Coefficients: \n${model.coefficientMatrix} Intercept: \n${model.interceptVector}")
 }

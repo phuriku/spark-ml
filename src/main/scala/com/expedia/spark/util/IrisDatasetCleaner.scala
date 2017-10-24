@@ -4,6 +4,7 @@ import java.io.FileWriter
 import java.nio.file.{Files, Paths}
 
 import scala.io.Source
+import scala.util.Try
 
 object IrisDatasetCleaner extends App {
 
@@ -11,7 +12,7 @@ object IrisDatasetCleaner extends App {
   val target = "iris_dataset_cleaned.txt"
 
   def extractSVMLib(): Unit = {
-    if (Files.exists(Paths.get(target))) Files.delete(Paths.get(target))
+    if (Try(Paths.get(target)).toOption.isDefined) Files.delete(Paths.get(target))
     val fw = new FileWriter(target, true)
     try {
       Source.fromFile(source).getLines.foreach { line =>
