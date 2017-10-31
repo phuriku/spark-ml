@@ -1,6 +1,5 @@
 package com.expedia.spark.examples
 
-import com.expedia.spark.examples.LinearRegressionRunner.model
 import org.apache.spark.ml.regression.LinearRegression
 import org.apache.spark.sql.SparkSession
 
